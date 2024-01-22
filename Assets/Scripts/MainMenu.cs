@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
 
 public class MainMenu : MonoBehaviour
 {
@@ -10,6 +13,8 @@ public class MainMenu : MonoBehaviour
     {
         // Load the next scene in the build index
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        //bloquer le curseur
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     // Quit the game
