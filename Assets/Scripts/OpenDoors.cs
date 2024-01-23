@@ -12,7 +12,7 @@ public class OpenDoors : MonoBehaviour
     private GameObject MessageText;
 
     public bool isDoorOpen = false;
-    public float rotationSpeed = 100f; // Vitesse de rotation des portes en degrés par seconde
+    public float rotationSpeed = 110f;
 
     void Start()
     {
@@ -52,7 +52,7 @@ public class OpenDoors : MonoBehaviour
             }
             else
             {
-                Debug.Log("Vous n'êtes pas devant la porte");
+                // Debug.Log("Vous n'êtes pas devant la porte");
             }
         }
     }
