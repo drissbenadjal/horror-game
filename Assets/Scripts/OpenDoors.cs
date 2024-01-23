@@ -1,55 +1,103 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class OpenDoors : MonoBehaviour
 {
-    //faire un truc
-    //faire en sorte que ce qui y a dedans bouge DoorD_Left et DoorD_Right s'ouvre (rotation) quand on appuie sur E
+    private GameObject DoorD_V1_TOP;
+    private GameObject DoorD_Left;
+    private GameObject DoorD_Right;
+    private GameObject Player;
+    private GameObject SoundOpeningDoor;
+    private GameObject MessageText;
+
     public bool isDoorOpen = false;
-    // Start is called before the first frame update
+    public float rotationSpeed = 100f; // Vitesse de rotation des portes en degrés par seconde
+
     void Start()
     {
+        DoorD_V1_TOP = GameObject.Find("DoorD_V1_TOP");
         DoorD_Left = GameObject.Find("DoorD_Left_TOP");
         DoorD_Right = GameObject.Find("DoorD_Right_TOP");
+        SoundOpeningDoor = GameObject.Find("Sound Opening Door");
+        MessageText = GameObject.Find("MessageText");
+        Player = GameObject.Find("PlayerCapsule");
     }
 
-    // Update is called once per frame
     void Update()
     {
+        if (IsPlayerInFrontOfDoor())
+        {
+            MessageText.GetComponent<TextMeshProUGUI>().text = isDoorOpen ? "Press E to close the door" : "Press E to open the door";
+            MessageText.SetActive(true);
+        }
+        else
+        {
+            MessageText.SetActive(false);
+            MessageText.GetComponent<TextMeshProUGUI>().text = "";
+        }
+
         if (Input.GetKeyDown(KeyCode.E))
         {
-            DoorD_V1_TOP = GameObject.Find("DoorD_V1_TOP");
-            Player = GameObject.Find("Player");
-            //SI LE JOUEUR EST DEVANT LA PORTE
-            Debug.Log("Player: " + Player.transform.position.x + " " + Player.transform.position.z);
-            Debug.Log("DoorD_V1_TOP: " + DoorD_V1_TOP.transform.position.x + " " + DoorD_V1_TOP.transform.position.z);
-            
-            if (Player.transform.position.x < DoorD_V1_TOP.transform.position.x + 2 && Player.transform.position.x > DoorD_V1_TOP.transform.position.x - 2 && Player.transform.position.z < DoorD_V1_TOP.transform.position.z + 2 && Player.transform.position.z > DoorD_V1_TOP.transform.position.z - 2)
+            if (IsPlayerInFrontOfDoor())
             {
-                //SI LA PORTE EST OUVERTE
                 if (isDoorOpen)
                 {
-                    DoorD_Left.transform.Rotate(0, 90, 0);
-                    DoorD_Right.transform.Rotate(0, 90, 0);
-                    isDoorOpen = false;
+                    StartCoroutine(CloseDoor());
                 }
                 else
                 {
-                    DoorD_Left.transform.Rotate(0, -90, 0);
-                    DoorD_Right.transform.Rotate(0, -90, 0);
-                    isDoorOpen = true;
+                    StartCoroutine(OpenDoor());
                 }
-            } else
+            }
+            else
             {
                 Debug.Log("Vous n'êtes pas devant la porte");
             }
         }
     }
 
-    private GameObject DoorD_V1_TOP;
-    private GameObject DoorD_Left;
-    private GameObject DoorD_Right;
+    bool IsPlayerInFrontOfDoor()
+    {
+        float proximityThreshold = 1.3f;
+        Vector3 doorPosition = DoorD_V1_TOP.transform.position;
+        Vector3 playerPosition = Player.transform.position;
 
-    private GameObject Player;
+        return Mathf.Abs(playerPosition.x - doorPosition.x) < proximityThreshold &&
+               Mathf.Abs(playerPosition.z - doorPosition.z) < proximityThreshold;
+    }
+
+    IEnumerator OpenDoor()
+    {
+        SoundOpeningDoor.GetComponent<AudioSource>().Play();
+        float angle = 0f;
+
+        while (angle < 90f)
+        {
+            float rotationStep = rotationSpeed * Time.deltaTime;
+            DoorD_Left.transform.Rotate(Vector3.up, -rotationStep);
+            DoorD_Right.transform.Rotate(Vector3.up, -rotationStep);
+            angle += rotationStep;
+            yield return null;
+        }
+
+        isDoorOpen = true;
+    }
+
+    IEnumerator CloseDoor()
+    {
+        SoundOpeningDoor.GetComponent<AudioSource>().Play();
+        float angle = 0f;
+
+        while (angle < 90f)
+        {
+            float rotationStep = rotationSpeed * Time.deltaTime;
+            DoorD_Left.transform.Rotate(Vector3.up, rotationStep);
+            DoorD_Right.transform.Rotate(Vector3.up, rotationStep);
+            angle += rotationStep;
+            yield return null;
+        }
+
+        isDoorOpen = false;
+    }
 }
