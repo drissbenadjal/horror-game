@@ -2,21 +2,29 @@ using System.Collections;
 using UnityEngine;
 using TMPro;
 
-public class OpenDoors : MonoBehaviour
+public class OpenSimpleDoor : MonoBehaviour
 {
-    public GameObject DoorD_V1_TOP;
-    public GameObject DoorD_Left;
-    public GameObject DoorD_Right;
+    public GameObject Door_Cadre;
+    public GameObject Door_Left;
+    public GameObject Screamer;
+    public GameObject Screamer_Audio;
     private GameObject Player;
     private GameObject SoundOpeningDoor;
+    private GameObject SoundLockDoor;
     private GameObject MessageText;
 
     public bool isDoorOpen = false;
+    public bool isLockDoor = false;
     public float rotationSpeed = 110f;
+
+    public bool ScreamerIsPlay = false;
 
     void Start()
     {
+        // Door_Cadre = GameObject.Find("Door_Cadre_Gatehouse");
+        // Door_Left = GameObject.Find("Door_Gatehouse");
         SoundOpeningDoor = GameObject.Find("Sound Opening Door");
+        SoundLockDoor = GameObject.Find("Sound Lock Door");
         MessageText = GameObject.Find("MessageText");
         Player = GameObject.Find("PlayerCapsule");
     }
@@ -38,13 +46,20 @@ public class OpenDoors : MonoBehaviour
         {
             if (IsPlayerInFrontOfDoor())
             {
-                if (isDoorOpen)
+                if (isLockDoor)
                 {
-                    StartCoroutine(CloseDoor());
+                    SoundLockDoor.GetComponent<AudioSource>().Play();
                 }
                 else
                 {
-                    StartCoroutine(OpenDoor());
+                    if (isDoorOpen)
+                    {
+                        StartCoroutine(CloseDoor());
+                    }
+                    else
+                    {
+                        StartCoroutine(OpenDoor());
+                    }
                 }
             }
             else
@@ -57,7 +72,7 @@ public class OpenDoors : MonoBehaviour
     bool IsPlayerInFrontOfDoor()
     {
         float proximityThreshold = 1.3f;
-        Vector3 doorPosition = DoorD_V1_TOP.transform.position;
+        Vector3 doorPosition = Door_Cadre.transform.position;
         Vector3 playerPosition = Player.transform.position;
 
         return Mathf.Abs(playerPosition.x - doorPosition.x) < proximityThreshold &&
@@ -67,19 +82,36 @@ public class OpenDoors : MonoBehaviour
 
     IEnumerator OpenDoor()
     {
+        if (Screamer != null && ScreamerIsPlay == false)
+        {
+            Screamer.SetActive(true);
+            if (Screamer_Audio != null)
+            {
+                Screamer_Audio.GetComponent<AudioSource>().Play();
+                yield return new WaitForSeconds(4);
+                Screamer.SetActive(false);
+                Screamer_Audio.GetComponent<AudioSource>().Stop();
+            }
+            else
+            {
+                yield return new WaitForSeconds(4);
+                Screamer.SetActive(false);
+            }
+            ScreamerIsPlay = true;
+        }
+
+        isDoorOpen = true;
+
         SoundOpeningDoor.GetComponent<AudioSource>().Play();
         float angle = 0f;
 
         while (angle < 90f)
         {
             float rotationStep = rotationSpeed * Time.deltaTime;
-            DoorD_Left.transform.Rotate(Vector3.up, -rotationStep);
-            DoorD_Right.transform.Rotate(Vector3.up, -rotationStep);
+            Door_Left.transform.Rotate(Vector3.up, -rotationStep);
             angle += rotationStep;
             yield return null;
         }
-
-        isDoorOpen = true;
     }
 
     IEnumerator CloseDoor()
@@ -90,8 +122,7 @@ public class OpenDoors : MonoBehaviour
         while (angle < 90f)
         {
             float rotationStep = rotationSpeed * Time.deltaTime;
-            DoorD_Left.transform.Rotate(Vector3.up, rotationStep);
-            DoorD_Right.transform.Rotate(Vector3.up, rotationStep);
+            Door_Left.transform.Rotate(Vector3.up, rotationStep);
             angle += rotationStep;
             yield return null;
         }
