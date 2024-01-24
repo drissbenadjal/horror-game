@@ -12,7 +12,7 @@ public class MainMenu : MonoBehaviour
     public void PlayGame()
     {
         // Load the next scene in the build index
-        SceneManager.LoadScene("WarningScene");
+        SceneManager.LoadScene("MainGame");
         //bloquer le curseur
         Cursor.lockState = CursorLockMode.Locked;
     }
