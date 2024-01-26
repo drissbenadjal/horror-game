@@ -10,12 +10,17 @@ public class KeysManager : MonoBehaviour
 
     private GameObject Player;
     private GameObject MessageText;
+
+    private GameObject SoundKeyPickUp;
+
+    private bool animationIsRunning = false;
     private bool clearText = false;
 
     void Start()
     {
         MessageText = GameObject.Find("MessageText");
         Player = GameObject.Find("PlayerCapsule");
+        SoundKeyPickUp = GameObject.Find("Sound Key PickUp");
     }
 
     void Update()
@@ -24,7 +29,8 @@ public class KeysManager : MonoBehaviour
         {
             MessageText.GetComponent<TextMeshProUGUI>().text = "Press E to pick up the key";
             clearText = true;
-        } else if (clearText)
+        }
+        else if (clearText)
         {
             MessageText.GetComponent<TextMeshProUGUI>().text = "";
             clearText = false;
@@ -45,6 +51,14 @@ public class KeysManager : MonoBehaviour
         {
             if (Vector3.Distance(Player.transform.position, key.transform.position) < 2f)
             {
+                //si il est dans la liste des clés du joueur on ne l'affiche pas
+                foreach (string playerKey in PlayerKeys)
+                {
+                    if (playerKey == key.name)
+                    {
+                        return false;
+                    }
+                }
                 return true;
             }
         }
@@ -57,6 +71,7 @@ public class KeysManager : MonoBehaviour
         {
             if (Vector3.Distance(Player.transform.position, key.transform.position) < 2f)
             {
+                SoundKeyPickUp.GetComponent<AudioSource>().Play();
                 key.SetActive(false);
                 if (PlayerKeys.Count == 0)
                 {
