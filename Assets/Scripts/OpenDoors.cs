@@ -10,9 +10,11 @@ public class OpenDoors : MonoBehaviour
     private GameObject Player;
     private GameObject SoundOpeningDoor;
     private GameObject MessageText;
+    private bool animationIsRunning = false;
 
     public bool isDoorOpen = false;
     public float rotationSpeed = 110f;
+    private bool clearText = false;
 
     void Start()
     {
@@ -26,24 +28,29 @@ public class OpenDoors : MonoBehaviour
         if (IsPlayerInFrontOfDoor())
         {
             MessageText.GetComponent<TextMeshProUGUI>().text = isDoorOpen ? "Press E to close the door" : "Press E to open the door";
-            MessageText.SetActive(true);
-        }
-        else
+            clearText = true;
+        } else if (clearText)
         {
-            MessageText.SetActive(false);
             MessageText.GetComponent<TextMeshProUGUI>().text = "";
+            clearText = false;
         }
 
         if (Input.GetKeyDown(KeyCode.E))
         {
+            if (animationIsRunning)
+            {
+                return;
+            }
             if (IsPlayerInFrontOfDoor())
             {
                 if (isDoorOpen)
                 {
+                    animationIsRunning = true;
                     StartCoroutine(CloseDoor());
                 }
                 else
                 {
+                    animationIsRunning = true;
                     StartCoroutine(OpenDoor());
                 }
             }
@@ -78,7 +85,7 @@ public class OpenDoors : MonoBehaviour
             angle += rotationStep;
             yield return null;
         }
-
+        animationIsRunning = false;
         isDoorOpen = true;
     }
 
@@ -95,7 +102,7 @@ public class OpenDoors : MonoBehaviour
             angle += rotationStep;
             yield return null;
         }
-
+        animationIsRunning = false;
         isDoorOpen = false;
     }
 }
