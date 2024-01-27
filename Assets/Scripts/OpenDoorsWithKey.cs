@@ -9,6 +9,8 @@ public class OpenDoorsWithKey : MonoBehaviour
     public GameObject DoorLeft;
     public GameObject DoorRight;
 
+    public string KeyName;
+
     public GameObject SoundOpeningDoor;
 
     private GameObject Player;
@@ -34,13 +36,17 @@ public class OpenDoorsWithKey : MonoBehaviour
     {
         if (IsPlayerInFrontOfDoor())
         {
-            if (IsPlayerHasKey()) {
-            MessageText.GetComponent<TextMeshProUGUI>().text = "Press E to open the door";
-            } else {
-            MessageText.GetComponent<TextMeshProUGUI>().text = "You don't have the key to open the door";
+            if (IsPlayerHasKey())
+            {
+                MessageText.GetComponent<TextMeshProUGUI>().text = "Press E to open the door";
+            }
+            else
+            {
+                MessageText.GetComponent<TextMeshProUGUI>().text = "You don't have the key to open the door";
             }
             clearText = true;
-        } else if (clearText)
+        }
+        else if (clearText)
         {
             MessageText.GetComponent<TextMeshProUGUI>().text = "";
             clearText = false;
@@ -56,7 +62,16 @@ public class OpenDoorsWithKey : MonoBehaviour
             {
                 if (IsPlayerHasKey())
                 {
-                    OpenDoor();
+                    if (isDoorOpen)
+                    {
+                        animationIsRunning = true;
+                        StartCoroutine(CloseDoor());
+                    }
+                    else
+                    {
+                        animationIsRunning = true;
+                        StartCoroutine(OpenDoor());
+                    }
                 }
                 else
                 {
@@ -79,20 +94,49 @@ public class OpenDoorsWithKey : MonoBehaviour
     {
         foreach (string key in m_KeysManager.PlayerKeys)
         {
-            Debug.Log(key);
-            if (key == "Key1")
+            // Debug.Log(key);
+            if (key == KeyName)
             {
-                Debug.Log("Vous avez la clé");
+                // Debug.Log("Vous avez la clé");
                 return true;
             }
         }
         return false;
     }
 
-
     IEnumerator OpenDoor()
     {
-        Debug.Log("OpenDoor");
-        return null;
+        animationIsRunning = true;
+        SoundOpeningDoor.GetComponent<AudioSource>().Play();
+        float angle = 0f;
+
+        while (angle < 90f)
+        {
+            float rotationStep = rotationSpeed * Time.deltaTime;
+            DoorLeft.transform.Rotate(Vector3.up, -rotationStep);
+            DoorRight.transform.Rotate(Vector3.up, -rotationStep);
+            angle += rotationStep;
+            yield return null;
+        }
+        animationIsRunning = false;
+        isDoorOpen = true;
+    }
+
+    IEnumerator CloseDoor()
+    {
+        animationIsRunning = true;
+        SoundOpeningDoor.GetComponent<AudioSource>().Play();
+        float angle = 0f;
+
+        while (angle < 90f)
+        {
+            float rotationStep = rotationSpeed * Time.deltaTime;
+            DoorLeft.transform.Rotate(Vector3.up, rotationStep);
+            DoorRight.transform.Rotate(Vector3.up, rotationStep);
+            angle += rotationStep;
+            yield return null;
+        }
+        animationIsRunning = false;
+        isDoorOpen = false;
     }
 }
