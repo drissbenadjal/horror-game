@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using TMPro;
+using UnityEngine.InputSystem;
 
 public class OpenDoors : MonoBehaviour
 {
@@ -35,7 +36,7 @@ public class OpenDoors : MonoBehaviour
             clearText = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E) || (Gamepad.current != null && Gamepad.current.aButton.wasPressedThisFrame))
         {
             if (animationIsRunning)
             {

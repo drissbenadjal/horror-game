@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.InputSystem;
 
 public class OpenDoorsWithKey : MonoBehaviour
 {
-    public GameObject Cadre;
+    [SerializeField] private GameObject Cadre;
     public GameObject DoorLeft;
     public GameObject DoorRight;
 
@@ -52,7 +53,7 @@ public class OpenDoorsWithKey : MonoBehaviour
             clearText = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E) || (Gamepad.current != null && Gamepad.current.aButton.wasPressedThisFrame))
         {
             if (animationIsRunning)
             {
@@ -114,7 +115,10 @@ public class OpenDoorsWithKey : MonoBehaviour
         {
             float rotationStep = rotationSpeed * Time.deltaTime;
             DoorLeft.transform.Rotate(Vector3.up, -rotationStep);
-            DoorRight.transform.Rotate(Vector3.up, -rotationStep);
+            if (DoorRight != null)
+            {
+                DoorRight.transform.Rotate(Vector3.up, -rotationStep);
+            }
             angle += rotationStep;
             yield return null;
         }
@@ -132,7 +136,10 @@ public class OpenDoorsWithKey : MonoBehaviour
         {
             float rotationStep = rotationSpeed * Time.deltaTime;
             DoorLeft.transform.Rotate(Vector3.up, rotationStep);
-            DoorRight.transform.Rotate(Vector3.up, rotationStep);
+            if (DoorRight != null)
+            {
+                DoorRight.transform.Rotate(Vector3.up, rotationStep);
+            }
             angle += rotationStep;
             yield return null;
         }

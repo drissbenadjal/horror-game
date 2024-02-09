@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using TMPro;
+using UnityEngine.InputSystem;
 
 public class OpenSimpleDoor : MonoBehaviour
 {
@@ -42,7 +43,7 @@ public class OpenSimpleDoor : MonoBehaviour
             clearText = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E) || (Gamepad.current != null && Gamepad.current.aButton.wasPressedThisFrame))
         {
             if (animationIsRunning)
             {

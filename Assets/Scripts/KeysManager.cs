@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.InputSystem;
 
 public class KeysManager : MonoBehaviour
 {
@@ -36,7 +37,7 @@ public class KeysManager : MonoBehaviour
             clearText = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E) || (Gamepad.current != null && Gamepad.current.aButton.wasPressedThisFrame))
         {
             if (IsPlayerInFrontOfKey())
             {
@@ -77,16 +78,22 @@ public class KeysManager : MonoBehaviour
                 {
                     PlayerKeys.Add(key.name);
                     break;
-                }
-                for (int i = 0; i < PlayerKeys.Count; i++)
-                {
-                    if (PlayerKeys[i] == "")
+                } else {
+                    bool keyAlreadyInList = false;
+                    foreach (string playerKey in PlayerKeys)
                     {
-                        PlayerKeys[i] = key.name;
+                        if (playerKey == key.name)
+                        {
+                            keyAlreadyInList = true;
+                            break;
+                        }
+                    }
+                    if (!keyAlreadyInList)
+                    {
+                        PlayerKeys.Add(key.name);
                         break;
                     }
                 }
-                break;
             }
         }
     }

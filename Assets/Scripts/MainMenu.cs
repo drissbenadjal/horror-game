@@ -34,13 +34,18 @@ public class MainMenu : MonoBehaviour
         {
             if (isSettings)
             {
-                isSettings = true;
-                settingsMenu.SetActive(false);
-                mainMenu.SetActive(true);
-            }
-            else
-            {
-                return;
+                if (settingsMenu.activeSelf)
+                {
+                    isSettings = false;
+                    settingsMenu.SetActive(false);
+                    mainMenu.SetActive(true);
+                }
+                else
+                {
+                    isSettings = true;
+                    settingsMenu.SetActive(true);
+                    mainMenu.SetActive(false);
+                }
             }
         }
     }
@@ -56,13 +61,13 @@ public class MainMenu : MonoBehaviour
     {
         if (settingsMenu.activeSelf)
         {
-            isSettings = true;
+            isSettings = false;
             settingsMenu.SetActive(false);
             mainMenu.SetActive(true);
         }
         else
         {
-            isSettings = false;
+            isSettings = true;
             settingsMenu.SetActive(true);
             mainMenu.SetActive(false);
         }
