@@ -18,7 +18,7 @@ public class MainMenu : MonoBehaviour
 
     void Start()
     {
-        mainMenu = GameObject.Find("MainMenu");
+        mainMenu = GameObject.Find("MenuScene");
 
         // firstPersonController = GetComponent<StarterAssets.FirstPersonController>();
 
@@ -53,7 +53,7 @@ public class MainMenu : MonoBehaviour
     public void PlayGame()
     {
         // Load the next scene in the build index
-        SceneManager.LoadScene("MainGame");
+        SceneManager.LoadScene("GameScene");
         //bloquer le curseur
         Cursor.lockState = CursorLockMode.Locked;
     }

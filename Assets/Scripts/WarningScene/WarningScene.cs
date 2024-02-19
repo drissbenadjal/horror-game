@@ -14,6 +14,6 @@ public class WarningScene : MonoBehaviour
     IEnumerator ChangementScene()
     {
         yield return new WaitForSeconds(5);
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene("MenuScene");
     }
 }
