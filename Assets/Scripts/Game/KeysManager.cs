@@ -21,7 +21,7 @@ public class KeysManager : MonoBehaviour
     {
         MessageText = GameObject.Find("MessageText");
         Player = GameObject.Find("PlayerCapsule");
-        SoundKeyPickUp = GameObject.Find("Sound Key PickUp");
+        SoundKeyPickUp = GameObject.Find("PickUp Key Sound");
     }
 
     void Update()

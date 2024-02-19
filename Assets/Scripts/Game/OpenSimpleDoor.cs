@@ -25,8 +25,8 @@ public class OpenSimpleDoor : MonoBehaviour
     {
         // Door_Cadre = GameObject.Find("Door_Cadre_Gatehouse");
         // Door_Left = GameObject.Find("Door_Gatehouse");
-        SoundOpeningDoor = GameObject.Find("Sound Opening Door");
-        SoundLockDoor = GameObject.Find("Sound Lock Door");
+        SoundOpeningDoor = GameObject.Find("Opening Doors Sound");
+        SoundLockDoor = GameObject.Find("Locked Doors Sound");
         MessageText = GameObject.Find("MessageText");
         Player = GameObject.Find("PlayerCapsule");
     }

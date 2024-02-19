@@ -19,7 +19,7 @@ public class OpenDoors : MonoBehaviour
 
     void Start()
     {
-        SoundOpeningDoor = GameObject.Find("Sound Opening Door");
+        SoundOpeningDoor = GameObject.Find("Opening Doors Sound");
         MessageText = GameObject.Find("MessageText");
         Player = GameObject.Find("PlayerCapsule");
     }
