@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 
 public class ZombieScript : MonoBehaviour
 {
@@ -19,6 +20,8 @@ public class ZombieScript : MonoBehaviour
 
     private Vector3 wanderDestination; // Destination de déplacement aléatoire
 
+    [SerializeField]
+    private GameObject soundProximity; // Objet pour le son de proximité
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -43,6 +46,8 @@ public class ZombieScript : MonoBehaviour
 
         if (distanceToPlayer <= followRadius)
         {
+            //jouer le son
+            soundProximity.GetComponent<AudioSource>().Play();
             // Direction vers laquelle le zombie doit se tourner
             Vector3 lookDirection = playerTransform.position - transform.position;
             lookDirection.y = 0; // Ne pas inclure la rotation verticale
@@ -55,20 +60,25 @@ public class ZombieScript : MonoBehaviour
         }
         else
         {
+            soundProximity.GetComponent<AudioSource>().Stop();
+            // soundProximity.GetComponent<AudioSource>().time = 0;
             // Si le joueur n'est pas à proximité, déplacer le zombie aléatoirement
             if (!agent.hasPath || agent.remainingDistance < 1f)
             {
                 SetRandomWanderDestination();
             }
         }
+
     }
 
     void OnTriggerEnter(Collider other)
     {
         // Vérifier si l'agent entre en collision avec le joueur
+        // Debug.Log("Collision detected");
         if (other.CompareTag("Player"))
         {
-            Debug.Log("Player has been caught");
+            // Debug.Log("Player has been caught");
+            SceneManager.LoadScene("LooseScene");
         }
     }
 
