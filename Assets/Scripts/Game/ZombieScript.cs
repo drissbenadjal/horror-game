@@ -21,7 +21,7 @@ public class ZombieScript : MonoBehaviour
     private Vector3 wanderDestination; // Destination de déplacement aléatoire
 
     [SerializeField]
-    private GameObject soundProximity; // Objet pour le son de proximité
+    // private GameObject soundProximity; // Objet pour le son de proximité
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -47,7 +47,7 @@ public class ZombieScript : MonoBehaviour
         if (distanceToPlayer <= followRadius)
         {
             //jouer le son
-            soundProximity.GetComponent<AudioSource>().Play();
+            // soundProximity.GetComponent<AudioSource>().Play();
             // Direction vers laquelle le zombie doit se tourner
             Vector3 lookDirection = playerTransform.position - transform.position;
             lookDirection.y = 0; // Ne pas inclure la rotation verticale
@@ -60,7 +60,7 @@ public class ZombieScript : MonoBehaviour
         }
         else
         {
-            soundProximity.GetComponent<AudioSource>().Stop();
+            // soundProximity.GetComponent<AudioSource>().Stop();
             // soundProximity.GetComponent<AudioSource>().time = 0;
             // Si le joueur n'est pas à proximité, déplacer le zombie aléatoirement
             if (!agent.hasPath || agent.remainingDistance < 1f)

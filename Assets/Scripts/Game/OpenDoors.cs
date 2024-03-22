@@ -12,16 +12,24 @@ public class OpenDoors : MonoBehaviour
     private GameObject SoundOpeningDoor;
     private GameObject MessageText;
     private bool animationIsRunning = false;
+    private InputAction openAction;
 
     public bool isDoorOpen = false;
     public float rotationSpeed = 110f;
     private bool clearText = false;
+
+    public InputActionAsset actions;
 
     void Start()
     {
         SoundOpeningDoor = GameObject.Find("Opening Doors Sound");
         MessageText = GameObject.Find("MessageText");
         Player = GameObject.Find("PlayerCapsule");
+
+        // Récupère la référence à l'action "open" depuis votre ActionAsset
+        openAction = actions.FindActionMap("Player").FindAction("Action");
+        openAction.Enable();
+        openAction.performed += ctx => OpenCloseDoor();
     }
 
     void Update()
@@ -30,35 +38,41 @@ public class OpenDoors : MonoBehaviour
         {
             MessageText.GetComponent<TextMeshProUGUI>().text = isDoorOpen ? "Press E to close the door" : "Press E to open the door";
             clearText = true;
-        } else if (clearText)
+        }
+        else if (clearText)
         {
             MessageText.GetComponent<TextMeshProUGUI>().text = "";
             clearText = false;
         }
+    }
 
-        if (Input.GetKeyDown(KeyCode.E) || (Gamepad.current != null && Gamepad.current.aButton.wasPressedThisFrame))
+    void OnDisable()
+    {
+        openAction.Disable();
+    }
+
+    void OpenCloseDoor()
+    {
+        if (animationIsRunning)
         {
-            if (animationIsRunning)
+            return;
+        }
+        if (IsPlayerInFrontOfDoor())
+        {
+            if (isDoorOpen)
             {
-                return;
-            }
-            if (IsPlayerInFrontOfDoor())
-            {
-                if (isDoorOpen)
-                {
-                    animationIsRunning = true;
-                    StartCoroutine(CloseDoor());
-                }
-                else
-                {
-                    animationIsRunning = true;
-                    StartCoroutine(OpenDoor());
-                }
+                animationIsRunning = true;
+                StartCoroutine(CloseDoor());
             }
             else
             {
-                // Debug.Log("Vous n'êtes pas devant la porte");
+                animationIsRunning = true;
+                StartCoroutine(OpenDoor());
             }
+        }
+        else
+        {
+            // Debug.Log("Vous n'êtes pas devant la porte");
         }
     }
 

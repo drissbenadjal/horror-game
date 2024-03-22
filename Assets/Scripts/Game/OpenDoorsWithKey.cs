@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class OpenDoorsWithKey : MonoBehaviour
 {
@@ -27,10 +28,17 @@ public class OpenDoorsWithKey : MonoBehaviour
 
     private bool clearText = false;
 
+    public InputActionAsset actions;
+
     void Start()
     {
         MessageText = GameObject.Find("MessageText");
         Player = GameObject.Find("PlayerCapsule");
+
+        // Récupère la référence à l'action "open" depuis votre ActionAsset
+        actions.FindActionMap("Player").FindAction("Action").Enable();
+        InputAction openAction = actions.FindActionMap("Player").FindAction("Action");
+        openAction.performed += ctx => OpenCloseDoor();
     }
 
     void Update()
@@ -52,34 +60,6 @@ public class OpenDoorsWithKey : MonoBehaviour
             MessageText.GetComponent<TextMeshProUGUI>().text = "";
             clearText = false;
         }
-
-        if (Input.GetKeyDown(KeyCode.E) || (Gamepad.current != null && Gamepad.current.aButton.wasPressedThisFrame))
-        {
-            if (animationIsRunning)
-            {
-                return;
-            }
-            if (IsPlayerInFrontOfDoor())
-            {
-                if (IsPlayerHasKey())
-                {
-                    if (isDoorOpen)
-                    {
-                        animationIsRunning = true;
-                        StartCoroutine(CloseDoor());
-                    }
-                    else
-                    {
-                        animationIsRunning = true;
-                        StartCoroutine(OpenDoor());
-                    }
-                }
-                else
-                {
-                    // Debug.Log("Vous n'avez pas la clé");
-                }
-            }
-        }
     }
 
     private bool IsPlayerInFrontOfDoor()
@@ -95,11 +75,51 @@ public class OpenDoorsWithKey : MonoBehaviour
     {
         foreach (string key in m_KeysManager.PlayerKeys)
         {
-            // Debug.Log(key);
             if (key == KeyName)
             {
-                // Debug.Log("Vous avez la clé");
                 return true;
+            }
+        }
+        return false;
+    }
+
+    void OpenCloseDoor()
+    {
+        if (animationIsRunning)
+        {
+            return;
+        }
+        if (IsPlayerInFrontOfDoor())
+        {
+            if (IsPlayerHasKey())
+            {
+                IsPlayerHasKeyWin();
+                if (isDoorOpen)
+                {
+                    animationIsRunning = true;
+                    StartCoroutine(CloseDoor());
+                }
+                else
+                {
+                    animationIsRunning = true;
+                    StartCoroutine(OpenDoor());
+                }
+            }
+            else
+            {
+                // Player doesn't have the key
+            }
+        }
+    }
+
+    private bool IsPlayerHasKeyWin()
+    {
+        foreach (string key in m_KeysManager.PlayerKeys)
+        {
+            if (key == "KeyWin")
+            {
+                SceneManager.LoadScene("WinScene");
+                return false;
             }
         }
         return false;

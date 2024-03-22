@@ -11,10 +11,10 @@ public class KeysManager : MonoBehaviour
 
     private GameObject Player;
     private GameObject MessageText;
-
     private GameObject SoundKeyPickUp;
 
-    // private bool animationIsRunning = false;
+    public InputActionAsset actions;
+
     private bool clearText = false;
 
     void Start()
@@ -22,6 +22,11 @@ public class KeysManager : MonoBehaviour
         MessageText = GameObject.Find("MessageText");
         Player = GameObject.Find("PlayerCapsule");
         SoundKeyPickUp = GameObject.Find("PickUp Key Sound");
+
+        // Récupère la référence à l'action "pickup" depuis votre ActionAsset
+        actions.FindActionMap("Player").FindAction("Action").Enable();
+        InputAction pickUpAction = actions.FindActionMap("Player").FindAction("Action");
+        pickUpAction.performed += ctx => PickUpKey();
     }
 
     void Update()
@@ -36,14 +41,11 @@ public class KeysManager : MonoBehaviour
             MessageText.GetComponent<TextMeshProUGUI>().text = "";
             clearText = false;
         }
+    }
 
-        if (Input.GetKeyDown(KeyCode.E) || (Gamepad.current != null && Gamepad.current.aButton.wasPressedThisFrame))
-        {
-            if (IsPlayerInFrontOfKey())
-            {
-                PickUpKey();
-            }
-        }
+    void OnDisable()
+    {
+        actions.FindActionMap("Player").FindAction("Action").Disable();
     }
 
     private bool IsPlayerInFrontOfKey()
@@ -52,7 +54,6 @@ public class KeysManager : MonoBehaviour
         {
             if (Vector3.Distance(Player.transform.position, key.transform.position) < 2f)
             {
-                //si il est dans la liste des clés du joueur on ne l'affiche pas
                 foreach (string playerKey in PlayerKeys)
                 {
                     if (playerKey == key.name)
@@ -78,7 +79,9 @@ public class KeysManager : MonoBehaviour
                 {
                     PlayerKeys.Add(key.name);
                     break;
-                } else {
+                }
+                else
+                {
                     bool keyAlreadyInList = false;
                     foreach (string playerKey in PlayerKeys)
                     {

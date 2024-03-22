@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 
 public class OpenSimpleDoor : MonoBehaviour
 {
+    public InputActionAsset actions;
     public GameObject Door_Cadre;
     public GameObject Door_Left;
     public GameObject Screamer;
@@ -21,14 +22,20 @@ public class OpenSimpleDoor : MonoBehaviour
     private bool clearText = false;
     public bool ScreamerIsPlay = false;
 
+    private InputAction openAction;
+
     void Start()
     {
-        // Door_Cadre = GameObject.Find("Door_Cadre_Gatehouse");
-        // Door_Left = GameObject.Find("Door_Gatehouse");
         SoundOpeningDoor = GameObject.Find("Opening Doors Sound");
         SoundLockDoor = GameObject.Find("Locked Doors Sound");
         MessageText = GameObject.Find("MessageText");
         Player = GameObject.Find("PlayerCapsule");
+
+
+        // Récupère la référence à l'action "open" depuis votre ActionAsset
+        actions.FindActionMap("Player").FindAction("Action").Enable();
+        openAction = actions.FindActionMap("Player").FindAction("Action");
+        openAction.performed += ctx => OpenCloseDoor();
     }
 
     void Update()
@@ -37,43 +44,17 @@ public class OpenSimpleDoor : MonoBehaviour
         {
             MessageText.GetComponent<TextMeshProUGUI>().text = isDoorOpen ? "Press E to close the door" : "Press E to open the door";
             clearText = true;
-        } else if (clearText)
+        }
+        else if (clearText)
         {
             MessageText.GetComponent<TextMeshProUGUI>().text = "";
             clearText = false;
         }
+    }
 
-        if (Input.GetKeyDown(KeyCode.E) || (Gamepad.current != null && Gamepad.current.aButton.wasPressedThisFrame))
-        {
-            if (animationIsRunning)
-            {
-                return;
-            }
-            if (IsPlayerInFrontOfDoor())
-            {
-                if (isLockDoor)
-                {
-                    SoundLockDoor.GetComponent<AudioSource>().Play();
-                }
-                else
-                {
-                    if (isDoorOpen)
-                    {
-                        animationIsRunning = true;
-                        StartCoroutine(CloseDoor());
-                    }
-                    else
-                    {
-                        animationIsRunning = true;
-                        StartCoroutine(OpenDoor());
-                    }
-                }
-            }
-            else
-            {
-                // Debug.Log("Vous n'êtes pas devant la porte");
-            }
-        }
+    void OnDisable()
+    {
+        openAction.Disable();
     }
 
     bool IsPlayerInFrontOfDoor()
@@ -85,6 +66,38 @@ public class OpenSimpleDoor : MonoBehaviour
         return Mathf.Abs(playerPosition.x - doorPosition.x) < proximityThreshold &&
                Mathf.Abs(playerPosition.z - doorPosition.z) < proximityThreshold &&
                 Mathf.Abs(playerPosition.y - doorPosition.y) < proximityThreshold;
+    }
+
+    void OpenCloseDoor()
+    {
+        if (animationIsRunning)
+        {
+            return;
+        }
+        if (IsPlayerInFrontOfDoor())
+        {
+            if (isLockDoor)
+            {
+                SoundLockDoor.GetComponent<AudioSource>().Play();
+            }
+            else
+            {
+                if (isDoorOpen)
+                {
+                    animationIsRunning = true;
+                    StartCoroutine(CloseDoor());
+                }
+                else
+                {
+                    animationIsRunning = true;
+                    StartCoroutine(OpenDoor());
+                }
+            }
+        }
+        else
+        {
+            // Debug.Log("Vous n'êtes pas devant la porte");
+        }
     }
 
     IEnumerator OpenDoor()
@@ -118,7 +131,7 @@ public class OpenSimpleDoor : MonoBehaviour
             yield return null;
         }
         animationIsRunning = false;
-        
+
         isDoorOpen = true;
     }
 
