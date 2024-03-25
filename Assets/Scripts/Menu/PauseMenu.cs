@@ -12,38 +12,63 @@ public class PauseMenu : MonoBehaviour
     public static bool GameIsPaused = false;
 
     public GameObject pauseMenuUI;
+    private InputAction openAction;
+    public InputActionAsset actions;
 
-    // Update is called once per frame
-    void Update()
+    void Start()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) || (Gamepad.current != null && Gamepad.current.startButton.wasPressedThisFrame))
+        // Récupère la référence à l'action "open" depuis votre ActionAsset
+        openAction = actions.FindActionMap("Player").FindAction("PauseMenu");
+        openAction.Enable();
+        openAction.performed += ctx => togglePauseMenu();
+    }
+    
+    // Update is called once per frame
+    // void Update()
+    // {
+    //     if (Input.GetKeyDown(KeyCode.Escape) || (Gamepad.current != null && Gamepad.current.startButton.wasPressedThisFrame))
+    //     {
+    //         if (GameIsPaused)
+    //         {
+    //             Cursor.lockState = CursorLockMode.Locked;
+    //             Resume();
+    //         }
+    //         else
+    //         {
+    //             Pause();
+    //         }
+    //     }
+    // }
+
+    private void togglePauseMenu()
+    {
+        if (GameIsPaused)
         {
-            if (GameIsPaused)
-            {
-                Resume();
-                Cursor.lockState = CursorLockMode.Locked;
-            }
-            else
-            {
-                Pause();
-            }
+            Resume();
+        }
+        else
+        {
+            Pause();
         }
     }
 
+    // Resume the game
     public void Resume()
     {
-        Debug.Log("Pause");
         pauseMenuUI.SetActive(false);
         Time.timeScale = 1f;
         GameIsPaused = false;
         Cursor.lockState = CursorLockMode.Locked;
+        AudioListener.pause = false;
     }
 
+    // Pause the game
     void Pause()
     {
         pauseMenuUI.SetActive(true);
         Time.timeScale = 0f;
         GameIsPaused = true;
+        AudioListener.pause = true;
         Cursor.lockState = CursorLockMode.None;
     }
 
@@ -55,10 +80,9 @@ public class PauseMenu : MonoBehaviour
         SceneManager.LoadScene("MenuScene");
     }
 
-
+    // Quit the game
     public void QuitGame()
     {
-        Debug.Log("Quit");
         Application.Quit();
     }
 }

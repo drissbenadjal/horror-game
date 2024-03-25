@@ -47,11 +47,11 @@ public class OpenDoorsWithKey : MonoBehaviour
         {
             if (IsPlayerHasKey())
             {
-                MessageText.GetComponent<TextMeshProUGUI>().text = "Press E to open the door";
+                MessageText.GetComponent<TextMeshProUGUI>().text = TextManager.PressEToOpenDoor;;
             }
             else
             {
-                MessageText.GetComponent<TextMeshProUGUI>().text = "You don't have the key to open the door";
+                MessageText.GetComponent<TextMeshProUGUI>().text = TextManager.YouDontHaveTheKey;
             }
             clearText = true;
         }

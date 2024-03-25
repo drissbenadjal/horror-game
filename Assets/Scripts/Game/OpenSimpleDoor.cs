@@ -42,7 +42,7 @@ public class OpenSimpleDoor : MonoBehaviour
     {
         if (IsPlayerInFrontOfDoor())
         {
-            MessageText.GetComponent<TextMeshProUGUI>().text = isDoorOpen ? "Press E to close the door" : "Press E to open the door";
+            MessageText.GetComponent<TextMeshProUGUI>().text = isDoorOpen ? TextManager.PressEToCloseDoor : TextManager.PressEToOpenDoor;;
             clearText = true;
         }
         else if (clearText)
@@ -93,10 +93,6 @@ public class OpenSimpleDoor : MonoBehaviour
                     StartCoroutine(OpenDoor());
                 }
             }
-        }
-        else
-        {
-            // Debug.Log("Vous n'êtes pas devant la porte");
         }
     }
 

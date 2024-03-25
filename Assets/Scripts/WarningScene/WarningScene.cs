@@ -5,9 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class WarningScene : MonoBehaviour
 {
-    //attendre 10 secondes et aller à la scène suivante
     void Start()
     {
+        //wait 5 seconds before loading the menu scene
         StartCoroutine(ChangementScene());
     }
 

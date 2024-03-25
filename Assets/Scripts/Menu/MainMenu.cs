@@ -19,15 +19,8 @@ public class MainMenu : MonoBehaviour
     void Start()
     {
         mainMenu = GameObject.Find("MenuScene");
-
-        // firstPersonController = GetComponent<StarterAssets.FirstPersonController>();
-
-        // // Set the RotationSpeed of FirstPersonController
-        // if (firstPersonController != null)
-        // {
-        //     firstPersonController.RotationSpeed = 1.0f;
-        // }
     }
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -54,7 +47,7 @@ public class MainMenu : MonoBehaviour
     {
         // Load the next scene in the build index
         SceneManager.LoadScene("GameScene");
-        //bloquer le curseur
+        // Block the cursor
         Cursor.lockState = CursorLockMode.Locked;
     }
     public void Settings()
@@ -76,7 +69,6 @@ public class MainMenu : MonoBehaviour
     // Quit the game
     public void QuitGame()
     {
-        Debug.Log("Quit");
         Application.Quit();
     }
 }

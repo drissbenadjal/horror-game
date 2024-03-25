@@ -10,29 +10,29 @@ public class ZombieMainMenu : MonoBehaviour
 
     void Update()
     {
-        // Ajouter le temps écoulé depuis la dernière mise à jour
+        // Add the time elapsed since the last frame
         timeElapsed += Time.deltaTime;
 
-        // Vérifier si le temps écoulé est supérieur à 4 secondes
+        // Verify if 45 seconds have passed
         if (timeElapsed >= 45f)
         {
-            // Réinitialiser le temps écoulé
+            // Reset the time elapsed
             timeElapsed = 0f;
 
-            // Effectuer la rotation de 90 degrés sur l'axe Y
+            // Rotate the zombie
             RotateZombie();
         }
     }
 
     void RotateZombie()
     {
-        // Obtenir la rotation actuelle du zombie
+        // Take the current rotation of the zombie
         Vector3 currentRotation = zombie.transform.eulerAngles;
 
-        // Ajouter 90 degrés à la rotation sur l'axe Y
+        // Add 180 degrees to the current rotation
         currentRotation.y += 180f;
 
-        // Appliquer la nouvelle rotation au zombie
+        // Apply the new rotation to the zombie
         zombie.transform.eulerAngles = currentRotation;
     }
 }

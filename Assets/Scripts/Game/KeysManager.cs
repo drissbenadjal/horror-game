@@ -23,7 +23,7 @@ public class KeysManager : MonoBehaviour
         Player = GameObject.Find("PlayerCapsule");
         SoundKeyPickUp = GameObject.Find("PickUp Key Sound");
 
-        // Récupère la référence à l'action "pickup" depuis votre ActionAsset
+        // Get the reference to the action "Action" from your ActionAsset
         actions.FindActionMap("Player").FindAction("Action").Enable();
         InputAction pickUpAction = actions.FindActionMap("Player").FindAction("Action");
         pickUpAction.performed += ctx => PickUpKey();
@@ -33,7 +33,7 @@ public class KeysManager : MonoBehaviour
     {
         if (IsPlayerInFrontOfKey())
         {
-            MessageText.GetComponent<TextMeshProUGUI>().text = "Press E to pick up the key";
+            MessageText.GetComponent<TextMeshProUGUI>().text = TextManager.PressEToPickUpKey;
             clearText = true;
         }
         else if (clearText)

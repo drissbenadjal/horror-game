@@ -10,59 +10,51 @@ public class ZombieScript : MonoBehaviour
     NavMeshAgent agent;
 
     [SerializeField]
-    private float baseSpeed = 7f; // Vitesse de déplacement de base de l'agent
+    private float baseSpeed = 7f; // Speed of the agent
 
     [SerializeField]
-    private float followRadius = 10f; // Rayon dans lequel le zombie commencera à suivre le joueur
+    private float followRadius = 10f; // Radius within which the zombie will follow the player
 
     [SerializeField]
-    private float wanderRadius = 20f; // Rayon de déplacement aléatoire lorsque le joueur n'est pas à proximité
+    private float wanderRadius = 20f; // Radius within which the zombie will move randomly
 
-    private Vector3 wanderDestination; // Destination de déplacement aléatoire
-
-    [SerializeField]
-    // private GameObject soundProximity; // Objet pour le son de proximité
+    private Vector3 wanderDestination; // Destination for random movement
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        agent.speed = baseSpeed; // Définir la vitesse de l'agent sur la vitesse de base
-
-        // Initialiser la première destination de déplacement aléatoire
+        agent.speed = baseSpeed; // Set the speed of the agent to the base speed
+        // Initialyse the destination of the agent
         SetRandomWanderDestination();
     }
 
     void Update()
     {
-        // Vérifier si le playerTransform est défini
+        // Verify if the playerTransform is null
         if (playerTransform == null)
         {
-            // Vous pouvez récupérer le joueur de la scène ou d'une autre manière
+            // Find the player and assign it to the playerTransform variable
             playerTransform = GameObject.FindGameObjectWithTag("Player")?.transform;
             return;
         }
 
-        // Calculer la distance entre le zombie et le joueur
+        // Calculate the distance between the zombie and the player
         float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
 
         if (distanceToPlayer <= followRadius)
         {
-            //jouer le son
-            // soundProximity.GetComponent<AudioSource>().Play();
-            // Direction vers laquelle le zombie doit se tourner
+            // Direction in which the zombie should look
             Vector3 lookDirection = playerTransform.position - transform.position;
-            lookDirection.y = 0; // Ne pas inclure la rotation verticale
+            lookDirection.y = 0; // Keep the zombie upright
             
-            // Rotation progressive du zombie vers le joueur
+            // Rotate the zombie towards the player
             transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(lookDirection), Time.deltaTime * 360f);
 
-            // Mettre à jour la destination de l'agent pour suivre le joueur
+            // Update the destination of the agent to the player's position
             agent.SetDestination(playerTransform.position);
         }
         else
         {
-            // soundProximity.GetComponent<AudioSource>().Stop();
-            // soundProximity.GetComponent<AudioSource>().time = 0;
-            // Si le joueur n'est pas à proximité, déplacer le zombie aléatoirement
+            // Verify if the agent has reached its destination
             if (!agent.hasPath || agent.remainingDistance < 1f)
             {
                 SetRandomWanderDestination();
@@ -73,22 +65,23 @@ public class ZombieScript : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        // Vérifier si l'agent entre en collision avec le joueur
-        // Debug.Log("Collision detected");
+        // Verify if the collider is the player
         if (other.CompareTag("Player"))
         {
             // Debug.Log("Player has been caught");
+            // Unfocuse the cursor
+            Cursor.lockState = CursorLockMode.None;
             SceneManager.LoadScene("LooseScene");
         }
     }
 
-    // Fonction pour augmenter la vitesse de l'agent
+    // Increase the speed of the agent
     public void IncreaseSpeed(float speedIncreaseAmount)
     {
-        agent.speed += speedIncreaseAmount; // Augmenter la vitesse de l'agent de la quantité spécifiée
+        agent.speed += speedIncreaseAmount; // Increase the speed of the agent
     }
 
-    // Définir une destination de déplacement aléatoire dans le rayon de déplacement aléatoire
+    // Set the destination of the agent to a random position within the wanderRadius
     private void SetRandomWanderDestination()
     {
         Vector3 randomDirection = Random.insideUnitSphere * wanderRadius;

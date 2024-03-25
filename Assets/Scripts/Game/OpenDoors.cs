@@ -12,12 +12,12 @@ public class OpenDoors : MonoBehaviour
     private GameObject SoundOpeningDoor;
     private GameObject MessageText;
     private bool animationIsRunning = false;
-    private InputAction openAction;
 
     public bool isDoorOpen = false;
     public float rotationSpeed = 110f;
     private bool clearText = false;
 
+    private InputAction openAction;
     public InputActionAsset actions;
 
     void Start()
@@ -36,7 +36,7 @@ public class OpenDoors : MonoBehaviour
     {
         if (IsPlayerInFrontOfDoor())
         {
-            MessageText.GetComponent<TextMeshProUGUI>().text = isDoorOpen ? "Press E to close the door" : "Press E to open the door";
+            MessageText.GetComponent<TextMeshProUGUI>().text = isDoorOpen ? TextManager.PressEToCloseDoor : TextManager.PressEToOpenDoor;;
             clearText = true;
         }
         else if (clearText)
@@ -69,10 +69,6 @@ public class OpenDoors : MonoBehaviour
                 animationIsRunning = true;
                 StartCoroutine(OpenDoor());
             }
-        }
-        else
-        {
-            // Debug.Log("Vous n'êtes pas devant la porte");
         }
     }
 
