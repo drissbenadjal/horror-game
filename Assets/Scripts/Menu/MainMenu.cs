@@ -31,13 +31,11 @@ public class MainMenu : MonoBehaviour
                 {
                     isSettings = false;
                     settingsMenu.SetActive(false);
-                    mainMenu.SetActive(true);
                 }
                 else
                 {
                     isSettings = true;
                     settingsMenu.SetActive(true);
-                    mainMenu.SetActive(false);
                 }
             }
         }
@@ -50,19 +48,18 @@ public class MainMenu : MonoBehaviour
         // Block the cursor
         Cursor.lockState = CursorLockMode.Locked;
     }
+
     public void Settings()
     {
         if (settingsMenu.activeSelf)
         {
             isSettings = false;
             settingsMenu.SetActive(false);
-            mainMenu.SetActive(true);
         }
         else
         {
             isSettings = true;
             settingsMenu.SetActive(true);
-            mainMenu.SetActive(false);
         }
     }
 

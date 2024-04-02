@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
+using System.IO;
 #endif
 
 namespace StarterAssets
@@ -14,6 +16,7 @@ namespace StarterAssets
 		[Header("Player")]
 		public float MoveSpeed = 4.0f;
 		public float SprintSpeed = 6.0f;
+		private string jsonFilePath = "sensibility.json";
 		public float RotationSpeed = 1.0f;
 		public float SpeedChangeRate = 10.0f;
 
@@ -64,11 +67,16 @@ namespace StarterAssets
 			get
 			{
 #if ENABLE_INPUT_SYSTEM
-			return _playerInput.currentControlScheme == "KeyboardMouse";
+				return _playerInput.currentControlScheme == "KeyboardMouse";
 #else
 				return false;
 #endif
 			}
+		}
+
+		public class SensibilityData
+		{
+			public float sensibility { get; set; }
 		}
 
 		private void Awake()
@@ -77,6 +85,21 @@ namespace StarterAssets
 			if (_mainCamera == null)
 			{
 				_mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+			}
+
+			//get sensibility from json file and replace to RotationSpeed
+			if (File.Exists(jsonFilePath))
+			{
+				// Lire le contenu du fichier JSON
+				string json = File.ReadAllText(jsonFilePath);
+				// Debug.Log("JSON: " + json);
+
+				// enelever tout et garde que le chiffre apres les :
+				string[] jsonSplit = json.Split(':');
+				string sensibility = jsonSplit[1].Replace("}", "");
+				
+				// Convertir le string en float
+				RotationSpeed = float.Parse(sensibility);
 			}
 		}
 
