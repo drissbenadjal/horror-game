@@ -97,9 +97,22 @@ namespace StarterAssets
 				// enelever tout et garde que le chiffre apres les :
 				string[] jsonSplit = json.Split(':');
 				string sensibility = jsonSplit[1].Replace("}", "");
+				//remplacer le . par une virgule
+				// sensibility = sensibility.Replace(".", ",");
 				
 				// Convertir le string en float
-				RotationSpeed = float.Parse(sensibility);
+				try {
+					RotationSpeed = float.Parse(sensibility);
+				} catch (System.Exception) {
+					//essayer de mettre une , a la place du .
+					try {
+						sensibility = sensibility.Replace(".", ",");
+						RotationSpeed = float.Parse(sensibility);
+					} catch (System.Exception) {
+						//si ca ne marche pas mettre la valeur par defaut
+						RotationSpeed = 1.0f;
+					}
+				}
 			}
 		}
 
